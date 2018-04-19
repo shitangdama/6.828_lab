@@ -9,10 +9,10 @@ import (
 // Next assaf
 type Next func() interface{}
 
-// Middleware asdasf
+// Middleware
 type Middleware func(*http.Request, Next) interface{}
 
-// Application asf
+// Application
 type Application struct {
 	// http.HandleFunc
 	middlewares []Middleware
@@ -40,19 +40,19 @@ func (app *Application) Callback(w http.ResponseWriter, r *http.Request) {
 		return nil
 	}
 	switch t := next().(type) {
-	case io.Reader:
-		{
-			p := make([]byte, 10)
-			for {
-				n, err := t.Read(p)
-				if err != nil {
-					break
+		case io.Reader:
+			{
+				p := make([]byte, 10)
+				for {
+					n, err := t.Read(p)
+					if err != nil {
+						break
+					}
+					w.Write(p[:n])
 				}
-				w.Write(p[:n])
 			}
-		}
-	default:
-		fmt.Fprint(w, t)
+		default:
+			fmt.Fprint(w, t)
 	}
 
 	// app.middlewares[current](w, r)
@@ -63,3 +63,12 @@ func (app *Application) Listen(addr string) error {
 	http.HandleFunc("/", app.Callback)
 	return http.ListenAndServe(addr, nil)
 }
+
+// switch v := i.(type) {
+// case T:
+//     // v 的类型为 T
+// case S:
+//     // v 的类型为 S
+// default:
+//     // 没有匹配，v 与 i 的类型相同
+// }
